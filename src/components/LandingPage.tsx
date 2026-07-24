@@ -3,7 +3,7 @@ import { exerciseById, getExerciseText } from "../data/exercises";
 import { useInstallPrompt } from "../hooks/useInstallPrompt";
 import { useLocale } from "../i18n";
 import { ExerciseArt } from "./ExerciseArt";
-import { GripIcon, SoundIcon } from "./Icons";
+import { GitHubIcon, GripIcon, SoundIcon } from "./Icons";
 import { LanguageSwitch } from "./LanguageSwitch";
 import { ProgressRing } from "./ProgressRing";
 import "./landing.css";
@@ -237,6 +237,16 @@ export function LandingPage() {
           <a href="/privacy">{copy.privacyLink}</a>
           <a href="https://tinygods.dev/" target="_blank" rel="noreferrer">
             Tiny Gods
+          </a>
+          <a
+            className="landing-footer__github"
+            href="https://github.com/tinygodsdev/7min"
+            target="_blank"
+            rel="noreferrer"
+            aria-label={copy.repositoryLinkLabel}
+            title={copy.repositoryLinkLabel}
+          >
+            <GitHubIcon size={18} />
           </a>
         </div>
       </footer>

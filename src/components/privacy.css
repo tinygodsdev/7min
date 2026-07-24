@@ -141,6 +141,27 @@
   text-underline-offset: 3px;
 }
 
+.privacy-footer__links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.privacy-footer .privacy-footer__github {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: background 140ms ease, transform 140ms ease;
+}
+
+.privacy-footer__github:hover {
+  background: rgba(40, 91, 82, 0.09);
+  transform: translateY(-1px);
+}
+
 @media (max-width: 620px) {
   .privacy-header__actions > a {
     display: none;

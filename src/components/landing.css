@@ -667,6 +667,22 @@
   text-underline-offset: 3px;
 }
 
+.landing-footer__meta .landing-footer__github {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  margin-left: -8px;
+  place-items: center;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: background 140ms ease, transform 140ms ease;
+}
+
+.landing-footer__github:hover {
+  background: rgba(40, 91, 82, 0.09);
+  transform: translateY(-1px);
+}
+
 .install-dialog-backdrop {
   position: fixed;
   z-index: 100;
@@ -878,9 +894,17 @@
   }
 
   .landing-footer__meta {
-    align-items: start;
-    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
     gap: 8px;
+  }
+
+  .landing-footer__meta p {
+    flex-basis: 100%;
+  }
+
+  .landing-footer__meta .landing-footer__github {
+    margin-left: 0;
   }
 }
 

@@ -1,4 +1,5 @@
 import { useLocale } from "../i18n";
+import { GitHubIcon } from "./Icons";
 import { LanguageSwitch } from "./LanguageSwitch";
 import "./privacy.css";
 
@@ -85,9 +86,21 @@ export function PrivacyPage() {
 
       <footer className="privacy-footer">
         <span>{copy.landingFooter}</span>
-        <a href="https://tinygods.dev/" target="_blank" rel="noreferrer">
-          Tiny Gods
-        </a>
+        <div className="privacy-footer__links">
+          <a href="https://tinygods.dev/" target="_blank" rel="noreferrer">
+            Tiny Gods
+          </a>
+          <a
+            className="privacy-footer__github"
+            href="https://github.com/tinygodsdev/7min"
+            target="_blank"
+            rel="noreferrer"
+            aria-label={copy.repositoryLinkLabel}
+            title={copy.repositoryLinkLabel}
+          >
+            <GitHubIcon size={18} />
+          </a>
+        </div>
       </footer>
     </main>
   );

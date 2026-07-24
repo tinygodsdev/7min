@@ -36,3 +36,7 @@ npm start
 
 The landing page is available at `/`, the workout at `/app`, and the privacy
 policy at `/privacy`.
+
+## License
+
+[MIT](LICENSE) © 2026 Tiny Gods
