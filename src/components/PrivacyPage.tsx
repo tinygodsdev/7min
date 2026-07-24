@@ -88,7 +88,7 @@ export function PrivacyPage() {
         <span>{copy.landingFooter}</span>
         <div className="privacy-footer__links">
           <a href="https://tinygods.dev/" target="_blank" rel="noreferrer">
-            Tiny Gods
+            {copy.createdBy} Tiny Gods
           </a>
           <a
             className="privacy-footer__github"

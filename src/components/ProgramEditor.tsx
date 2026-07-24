@@ -7,6 +7,7 @@ import {
 } from "../data/exercises";
 import { useLocale } from "../i18n";
 import { GripIcon } from "./Icons";
+import { AppFooter } from "./AppFooter";
 import { ExerciseArt } from "./ExerciseArt";
 
 export type ProgramItem = {
@@ -214,6 +215,8 @@ export function ProgramEditor({
           </div>
         </section>
       )}
+
+      <AppFooter />
     </main>
   );
 }

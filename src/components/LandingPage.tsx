@@ -236,7 +236,7 @@ export function LandingPage() {
           <p>{copy.landingFooter}</p>
           <a href="/privacy">{copy.privacyLink}</a>
           <a href="https://tinygods.dev/" target="_blank" rel="noreferrer">
-            Tiny Gods
+            {copy.createdBy} Tiny Gods
           </a>
           <a
             className="landing-footer__github"

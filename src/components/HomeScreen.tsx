@@ -8,6 +8,7 @@ import {
   useLocale,
 } from "../i18n";
 import { ExerciseArt } from "./ExerciseArt";
+import { AppFooter } from "./AppFooter";
 import { LanguageSwitch } from "./LanguageSwitch";
 import { SoundButton } from "./SoundButton";
 
@@ -178,10 +179,7 @@ export function HomeScreen({
         </div>
       </section>
 
-      <div className="home-footer">
-        <p className="safety-note">{copy.homeSafety}</p>
-        <a href="/privacy">{copy.privacyLink}</a>
-      </div>
+      <AppFooter safetyNote={copy.homeSafety} />
     </main>
   );
 }
