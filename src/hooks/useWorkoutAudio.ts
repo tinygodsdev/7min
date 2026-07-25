@@ -14,14 +14,21 @@ type CueNote = {
 
 type WorkoutAudioOptions = {
   enabled: boolean;
-  level: SoundLevel;
+  signalLevel: SoundLevel;
+  voiceLevel: SoundLevel;
   voiceEnabled: boolean;
 };
 
-const levelGain: Record<SoundLevel, number> = {
+const signalLevelGain: Record<SoundLevel, number> = {
   normal: 0.78,
   loud: 1.08,
   "extra-loud": 1.38,
+};
+
+const voiceLevelGain: Record<SoundLevel, number> = {
+  normal: 0.3,
+  loud: 0.5,
+  "extra-loud": 0.78,
 };
 
 const cueNotes: Record<Cue, CueNote[]> = {
@@ -49,7 +56,8 @@ const cueNotes: Record<Cue, CueNote[]> = {
 
 export function useWorkoutAudio({
   enabled,
-  level,
+  signalLevel,
+  voiceLevel,
   voiceEnabled,
 }: WorkoutAudioOptions) {
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -117,7 +125,7 @@ export function useWorkoutAudio({
         oscillator.frequency.setValueAtTime(frequency, noteStart);
         gain.gain.setValueAtTime(0.0001, noteStart);
         gain.gain.exponentialRampToValueAtTime(
-          volume * levelGain[level],
+          volume * signalLevelGain[signalLevel],
           noteStart + 0.012,
         );
         gain.gain.exponentialRampToValueAtTime(0.0001, noteEnd);
@@ -127,7 +135,7 @@ export function useWorkoutAudio({
         oscillator.stop(noteEnd + 0.02);
       });
     },
-    [enabled, level],
+    [enabled, signalLevel],
   );
 
   const playVoice = useCallback(
@@ -141,7 +149,7 @@ export function useWorkoutAudio({
           const source = context.createBufferSource();
           const gain = context.createGain();
           source.buffer = buffer;
-          gain.gain.value = Math.min(1.25, levelGain[level] * 0.95);
+          gain.gain.value = voiceLevelGain[voiceLevel];
           source.connect(gain);
           gain.connect(context.destination);
           source.start(context.currentTime + delaySeconds);
@@ -150,7 +158,7 @@ export function useWorkoutAudio({
           console.error(`Unable to play voice prompt for ${exerciseId}`, error);
         });
     },
-    [enabled, level, loadVoice, voiceEnabled],
+    [enabled, loadVoice, voiceEnabled, voiceLevel],
   );
 
   useEffect(

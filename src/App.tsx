@@ -45,13 +45,18 @@ function WorkoutApp() {
     "seven-minutes-voice",
     true,
   );
+  const [voiceLevel, setVoiceLevel] = usePersistentState<SoundLevel>(
+    "seven-minutes-voice-level",
+    "normal",
+  );
   const {
     prepare: prepareAudio,
     play: playAudio,
     playVoice,
   } = useWorkoutAudio({
     enabled: soundEnabled,
-    level: soundLevel,
+    signalLevel: soundLevel,
+    voiceLevel,
     voiceEnabled,
   });
 
@@ -97,8 +102,13 @@ function WorkoutApp() {
         onSoundLevelChange={setSoundLevel}
         voiceEnabled={voiceEnabled}
         onVoiceToggle={() => setVoiceEnabled((enabled) => !enabled)}
+        voiceLevel={voiceLevel}
+        onVoiceLevelChange={setVoiceLevel}
         onPreviewSound={() => {
           void prepareAudio().then(() => playAudio("exercise"));
+        }}
+        onPreviewVoice={() => {
+          void prepareAudio().then(() => playVoice(activeExercises[0]?.id ?? "jumping-jacks"));
         }}
       />
     );

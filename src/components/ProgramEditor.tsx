@@ -27,7 +27,10 @@ type ProgramEditorProps = {
   onSoundLevelChange: (level: SoundLevel) => void;
   voiceEnabled: boolean;
   onVoiceToggle: () => void;
+  voiceLevel: SoundLevel;
+  onVoiceLevelChange: (level: SoundLevel) => void;
   onPreviewSound: () => void;
+  onPreviewVoice: () => void;
 };
 
 export function ProgramEditor({
@@ -41,7 +44,10 @@ export function ProgramEditor({
   onSoundLevelChange,
   voiceEnabled,
   onVoiceToggle,
+  voiceLevel,
+  onVoiceLevelChange,
   onPreviewSound,
+  onPreviewVoice,
 }: ProgramEditorProps) {
   const { language, copy } = useLocale();
   const draggingIdRef = useRef<string | null>(null);
@@ -220,15 +226,53 @@ export function ProgramEditor({
             </label>
           </div>
 
-          <button
-            className="audio-preview-button"
-            type="button"
-            onClick={onPreviewSound}
-            disabled={!soundEnabled}
-          >
-            <SoundIcon size={18} />
-            {copy.editorPreviewSound}
-          </button>
+          <div className="audio-setting-row audio-setting-row--volume">
+            <div>
+              <strong>{copy.editorVoiceVolume}</strong>
+              <span>{copy.editorVoiceVolumeHelp}</span>
+            </div>
+            <div className="volume-options" role="group" aria-label={copy.editorVoiceVolume}>
+              {(
+                [
+                  ["normal", copy.editorVolumeNormal],
+                  ["loud", copy.editorVolumeLoud],
+                  ["extra-loud", copy.editorVolumeExtraLoud],
+                ] as const
+              ).map(([level, label]) => (
+                <button
+                  className={voiceLevel === level ? "is-active" : ""}
+                  type="button"
+                  key={level}
+                  onClick={() => onVoiceLevelChange(level)}
+                  aria-pressed={voiceLevel === level}
+                  disabled={!soundEnabled || !voiceEnabled}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="audio-preview-actions">
+            <button
+              className="audio-preview-button"
+              type="button"
+              onClick={onPreviewSound}
+              disabled={!soundEnabled}
+            >
+              <SoundIcon size={18} />
+              {copy.editorPreviewSound}
+            </button>
+            <button
+              className="audio-preview-button"
+              type="button"
+              onClick={onPreviewVoice}
+              disabled={!soundEnabled || !voiceEnabled}
+            >
+              <SoundIcon size={18} />
+              {copy.editorPreviewVoice}
+            </button>
+          </div>
         </div>
       </section>
 

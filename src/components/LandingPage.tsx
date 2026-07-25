@@ -45,14 +45,21 @@ export function LandingPage() {
     /iPad|iPhone|iPod/.test(navigator.userAgent) ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   const isAndroid = /Android/.test(navigator.userAgent);
-  const isFirefox = /Firefox|FxiOS/.test(navigator.userAgent);
+  const isFirefoxFamily = /Firefox|FxiOS|Zen/.test(navigator.userAgent);
+  const isChromiumFamily =
+    /Chrome|Chromium|CriOS|Edg|OPR/.test(navigator.userAgent) &&
+    !isFirefoxFamily;
   const recommendedInstallGuide = isIOS
     ? "ios-safari"
-    : isAndroid && isFirefox
+    : isAndroid && isFirefoxFamily
       ? "android-firefox"
-      : isAndroid
+      : isAndroid && isChromiumFamily
         ? "android-chrome"
-        : "desktop";
+        : isFirefoxFamily
+          ? "desktop-firefox"
+          : isChromiumFamily
+            ? "desktop-chromium"
+            : null;
   const installGuides = [
     {
       id: "ios-safari",
@@ -80,11 +87,19 @@ export function LandingPage() {
       ],
     },
     {
-      id: "desktop",
-      title: copy.landingInstallDesktop,
+      id: "desktop-chromium",
+      title: copy.landingInstallDesktopChromium,
       steps: [
-        copy.landingInstallDesktopStepOne,
-        copy.landingInstallDesktopStepTwo,
+        copy.landingInstallDesktopChromiumStepOne,
+        copy.landingInstallDesktopChromiumStepTwo,
+      ],
+    },
+    {
+      id: "desktop-firefox",
+      title: copy.landingInstallDesktopFirefox,
+      steps: [
+        copy.landingInstallDesktopFirefoxStepOne,
+        copy.landingInstallDesktopFirefoxStepTwo,
       ],
     },
   ];
