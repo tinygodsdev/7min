@@ -41,7 +41,7 @@ export default defineConfig({
       },
       workbox: {
         cleanupOutdatedCaches: true,
-        globPatterns: ["**/*.{js,css,html,png,svg,webp,woff2}"],
+        globPatterns: ["**/*.{js,css,html,png,svg,webp,woff2,mp3}"],
         globIgnores: ["**/icon-192.png", "**/icon-512.png"],
         navigateFallback: "/index.html",
       },

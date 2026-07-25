@@ -385,7 +385,8 @@ h3 {
   display: grid;
   width: 100%;
   aspect-ratio: 1;
-  place-items: center;
+  align-content: center;
+  justify-items: center;
   border: 1px solid rgba(40, 91, 82, 0.08);
   border-radius: 50%;
   background: #e2e3dc;
@@ -394,6 +395,19 @@ h3 {
   font-size: clamp(10px, 1.4vw, 13px);
   font-weight: 720;
   transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.history-day__date {
+  line-height: 1;
+}
+
+.history-day__duration {
+  margin-top: 3px;
+  font-size: clamp(7px, 0.9vw, 9px);
+  font-variant-numeric: tabular-nums;
+  font-weight: 680;
+  line-height: 1;
+  opacity: 0.7;
 }
 
 .history-day--completed {
@@ -501,6 +515,86 @@ h3 {
 
 .editor-section {
   margin-top: 38px;
+}
+
+.audio-settings {
+  margin-top: 0;
+}
+
+.audio-settings__card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 253, 247, 0.78);
+}
+
+.audio-setting-row {
+  display: flex;
+  min-height: 74px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 15px 18px;
+  border-bottom: 1px solid rgba(31, 44, 40, 0.08);
+}
+
+.audio-setting-row > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.audio-setting-row strong {
+  font-size: 14px;
+}
+
+.audio-setting-row > div:first-child span {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.volume-options {
+  display: flex;
+  flex: 0 0 auto;
+  padding: 3px;
+  border-radius: 13px;
+  background: #ecebe4;
+}
+
+.volume-options button {
+  padding: 8px 11px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 720;
+}
+
+.volume-options button.is-active {
+  background: var(--surface);
+  color: var(--teal);
+  box-shadow: 0 2px 8px rgba(31, 44, 40, 0.1);
+}
+
+.audio-preview-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 18px;
+  padding: 10px 0;
+  border: 0;
+  background: transparent;
+  color: var(--teal);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.audio-preview-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
 }
 
 .exercise-list {
@@ -963,6 +1057,20 @@ h3 {
     gap: 6px;
     min-height: 60px;
     padding: 7px 7px 7px 4px;
+  }
+
+  .audio-setting-row--volume {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .volume-options {
+    align-self: stretch;
+  }
+
+  .volume-options button {
+    flex: 1;
   }
 
   .exercise-row__art {

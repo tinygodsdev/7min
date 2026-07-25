@@ -696,8 +696,10 @@
 
 .install-dialog {
   position: relative;
-  width: min(100%, 430px);
+  width: min(100%, 620px);
+  max-height: calc(100svh - 40px);
   padding: 36px;
+  overflow-y: auto;
   border-radius: 28px;
   background: var(--surface);
   box-shadow: 0 30px 80px rgba(22, 35, 31, 0.28);
@@ -724,10 +726,63 @@
   font-size: 30px;
 }
 
-.install-dialog p {
-  margin-bottom: 24px;
+.install-dialog__intro {
+  margin-bottom: 18px;
   color: var(--muted);
   line-height: 1.55;
+}
+
+.install-dialog__guides {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.install-guide {
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #f8f5ed;
+}
+
+.install-guide--recommended {
+  border-color: rgba(40, 91, 82, 0.34);
+  background: #eef3ef;
+}
+
+.install-guide__heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.install-guide__heading strong {
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.install-guide__heading span {
+  flex: 0 0 auto;
+  padding: 3px 6px;
+  border-radius: 999px;
+  background: var(--teal);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 760;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.install-guide ol {
+  display: grid;
+  gap: 5px;
+  margin: 12px 0 0;
+  padding-left: 19px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
 }
 
 .landing-link-button {
@@ -905,6 +960,14 @@
 
   .landing-footer__meta .landing-footer__github {
     margin-left: 0;
+  }
+
+  .install-dialog {
+    padding: 30px 20px 22px;
+  }
+
+  .install-dialog__guides {
+    grid-template-columns: 1fr;
   }
 }
 

@@ -2,16 +2,19 @@ import type { Exercise } from "../data/exercises";
 
 export const EXERCISE_SECONDS = 30;
 export const REST_SECONDS = 10;
+export const PREPARE_SECONDS = 5;
 
 export type WorkoutInterval = {
-  type: "exercise" | "rest";
+  type: "prepare" | "exercise" | "rest";
   durationMs: number;
   exercise: Exercise;
   nextExercise?: Exercise;
 };
 
 export function buildWorkout(exercises: Exercise[]): WorkoutInterval[] {
-  return exercises.flatMap((exercise, index) => {
+  if (exercises.length === 0) return [];
+
+  const exerciseIntervals = exercises.flatMap<WorkoutInterval>((exercise, index) => {
     const exerciseInterval: WorkoutInterval = {
       type: "exercise",
       durationMs: EXERCISE_SECONDS * 1000,
@@ -32,11 +35,25 @@ export function buildWorkout(exercises: Exercise[]): WorkoutInterval[] {
       },
     ];
   });
+
+  return [
+    {
+      type: "prepare",
+      durationMs: PREPARE_SECONDS * 1000,
+      exercise: exercises[0],
+      nextExercise: exercises[0],
+    },
+    ...exerciseIntervals,
+  ];
 }
 
 export function getWorkoutDurationSeconds(exerciseCount: number): number {
   if (exerciseCount === 0) return 0;
-  return exerciseCount * EXERCISE_SECONDS + (exerciseCount - 1) * REST_SECONDS;
+  return (
+    PREPARE_SECONDS +
+    exerciseCount * EXERCISE_SECONDS +
+    (exerciseCount - 1) * REST_SECONDS
+  );
 }
 
 export function formatDuration(totalSeconds: number): string {

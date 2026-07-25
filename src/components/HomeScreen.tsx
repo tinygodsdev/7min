@@ -161,8 +161,14 @@ export function HomeScreen({
         <div className="history-calendar" aria-label={copy.homeHistoryAria}>
           {historyDays.map((day) => {
             const completed = day.workouts.length > 0;
+            const durationSeconds = day.workouts.reduce(
+              (total, workout) => total + workout.durationSeconds,
+              0,
+            );
+            const durationMinutes = Math.max(1, Math.round(durationSeconds / 60));
+            const compactDuration = `${durationMinutes}${language === "en" ? "m" : "м"}`;
             const tooltip = completed
-              ? `${dateFormatter.format(day.date)} · ${formatWorkoutCount(day.workouts.length, language)}`
+              ? `${dateFormatter.format(day.date)} · ${formatWorkoutCount(day.workouts.length, language)} · ${formatDuration(durationSeconds)}`
               : `${dateFormatter.format(day.date)} · ${copy.homeNoWorkout}`;
             return (
               <button
@@ -172,7 +178,10 @@ export function HomeScreen({
                 data-tooltip={tooltip}
                 aria-label={tooltip}
               >
-                <span>{day.date.getDate()}</span>
+                <span className="history-day__date">{day.date.getDate()}</span>
+                {completed && (
+                  <small className="history-day__duration">{compactDuration}</small>
+                )}
               </button>
             );
           })}

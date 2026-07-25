@@ -44,6 +44,50 @@ export function LandingPage() {
   const isIOS =
     /iPad|iPhone|iPod/.test(navigator.userAgent) ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/.test(navigator.userAgent);
+  const isFirefox = /Firefox|FxiOS/.test(navigator.userAgent);
+  const recommendedInstallGuide = isIOS
+    ? "ios-safari"
+    : isAndroid && isFirefox
+      ? "android-firefox"
+      : isAndroid
+        ? "android-chrome"
+        : "desktop";
+  const installGuides = [
+    {
+      id: "ios-safari",
+      title: copy.landingInstallIOSSafari,
+      steps: [
+        copy.landingInstallIOSStepOne,
+        copy.landingInstallIOSStepTwo,
+        copy.landingInstallIOSStepThree,
+      ],
+    },
+    {
+      id: "android-chrome",
+      title: copy.landingInstallAndroidChrome,
+      steps: [
+        copy.landingInstallChromeStepOne,
+        copy.landingInstallChromeStepTwo,
+      ],
+    },
+    {
+      id: "android-firefox",
+      title: copy.landingInstallAndroidFirefox,
+      steps: [
+        copy.landingInstallFirefoxStepOne,
+        copy.landingInstallFirefoxStepTwo,
+      ],
+    },
+    {
+      id: "desktop",
+      title: copy.landingInstallDesktop,
+      steps: [
+        copy.landingInstallDesktopStepOne,
+        copy.landingInstallDesktopStepTwo,
+      ],
+    },
+  ];
   const installLabel = installed ? copy.landingOpenApp : copy.landingInstall;
 
   const handleInstall = async () => {
@@ -275,11 +319,26 @@ export function LandingPage() {
             </button>
             <span className="brand__mark" aria-hidden="true">7</span>
             <h2 id="install-dialog-title">{copy.landingInstallTitle}</h2>
-            <p>
-              {isIOS
-                ? copy.landingInstallIOS
-                : copy.landingInstallOther}
-            </p>
+            <p className="install-dialog__intro">{copy.landingInstallIntro}</p>
+            <div className="install-dialog__guides">
+              {installGuides.map((guide) => {
+                const recommended = guide.id === recommendedInstallGuide;
+                return (
+                  <article
+                    className={`install-guide ${recommended ? "install-guide--recommended" : ""}`}
+                    key={guide.id}
+                  >
+                    <div className="install-guide__heading">
+                      <strong>{guide.title}</strong>
+                      {recommended && <span>{copy.landingInstallRecommended}</span>}
+                    </div>
+                    <ol>
+                      {guide.steps.map((step) => <li key={step}>{step}</li>)}
+                    </ol>
+                  </article>
+                );
+              })}
+            </div>
             <a className="landing-link-button" href="/app">
               {copy.landingOpenWithoutInstall}
             </a>

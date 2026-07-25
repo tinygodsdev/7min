@@ -5,8 +5,9 @@ import {
   getExerciseText,
   type Exercise,
 } from "../data/exercises";
+import type { SoundLevel } from "../hooks/useWorkoutAudio";
 import { useLocale } from "../i18n";
-import { GripIcon } from "./Icons";
+import { GripIcon, SoundIcon } from "./Icons";
 import { AppFooter } from "./AppFooter";
 import { ExerciseArt } from "./ExerciseArt";
 
@@ -20,6 +21,13 @@ type ProgramEditorProps = {
   onChange: (program: ProgramItem[]) => void;
   onReset: () => void;
   onClose: () => void;
+  soundEnabled: boolean;
+  onSoundToggle: () => void;
+  soundLevel: SoundLevel;
+  onSoundLevelChange: (level: SoundLevel) => void;
+  voiceEnabled: boolean;
+  onVoiceToggle: () => void;
+  onPreviewSound: () => void;
 };
 
 export function ProgramEditor({
@@ -27,6 +35,13 @@ export function ProgramEditor({
   onChange,
   onReset,
   onClose,
+  soundEnabled,
+  onSoundToggle,
+  soundLevel,
+  onSoundLevelChange,
+  voiceEnabled,
+  onVoiceToggle,
+  onPreviewSound,
 }: ProgramEditorProps) {
   const { language, copy } = useLocale();
   const draggingIdRef = useRef<string | null>(null);
@@ -136,6 +151,86 @@ export function ProgramEditor({
           {copy.editorReset}
         </button>
       </header>
+
+      <section className="editor-section audio-settings" aria-labelledby="audio-heading">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">{copy.editorAudio}</p>
+            <h2 id="audio-heading">{copy.editorAudioTitle}</h2>
+            <p>{copy.editorAudioHelp}</p>
+          </div>
+        </div>
+
+        <div className="audio-settings__card">
+          <div className="audio-setting-row">
+            <div>
+              <strong>{copy.editorSoundEnabled}</strong>
+              <span>{copy.editorSoundEnabledHelp}</span>
+            </div>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={soundEnabled}
+                onChange={onSoundToggle}
+                aria-label={copy.editorSoundEnabled}
+              />
+              <span className="switch__track" />
+            </label>
+          </div>
+
+          <div className="audio-setting-row audio-setting-row--volume">
+            <div>
+              <strong>{copy.editorSignalVolume}</strong>
+              <span>{copy.editorSignalVolumeHelp}</span>
+            </div>
+            <div className="volume-options" role="group" aria-label={copy.editorSignalVolume}>
+              {(
+                [
+                  ["normal", copy.editorVolumeNormal],
+                  ["loud", copy.editorVolumeLoud],
+                  ["extra-loud", copy.editorVolumeExtraLoud],
+                ] as const
+              ).map(([level, label]) => (
+                <button
+                  className={soundLevel === level ? "is-active" : ""}
+                  type="button"
+                  key={level}
+                  onClick={() => onSoundLevelChange(level)}
+                  aria-pressed={soundLevel === level}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="audio-setting-row">
+            <div>
+              <strong>{copy.editorVoiceEnabled}</strong>
+              <span>{copy.editorVoiceEnabledHelp}</span>
+            </div>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={voiceEnabled}
+                onChange={onVoiceToggle}
+                aria-label={copy.editorVoiceEnabled}
+              />
+              <span className="switch__track" />
+            </label>
+          </div>
+
+          <button
+            className="audio-preview-button"
+            type="button"
+            onClick={onPreviewSound}
+            disabled={!soundEnabled}
+          >
+            <SoundIcon size={18} />
+            {copy.editorPreviewSound}
+          </button>
+        </div>
+      </section>
 
       <section className="editor-section" aria-labelledby="program-heading">
         <div className="section-heading">

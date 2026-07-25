@@ -6,7 +6,8 @@ The app includes:
 
 - the canonical 12-exercise sequence and a small exercise library;
 - drag-and-drop exercise ordering;
-- distinct exercise and rest signals;
+- configurable interval signals and offline voice announcements;
+- a five-second preparation interval before the workout;
 - local workout history;
 - offline use, installation and screen wake lock;
 - English and Russian interfaces.

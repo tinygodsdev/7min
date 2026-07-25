@@ -14,8 +14,9 @@ type WorkoutScreenProps = {
   exercises: Exercise[];
   soundEnabled: boolean;
   onSoundToggle: () => void;
-  prepareAudio: () => Promise<void>;
-  playAudio: (cue: "exercise" | "rest" | "tick" | "complete") => void;
+  prepareAudio: (exerciseIds?: string[]) => Promise<void>;
+  playAudio: (cue: "prepare" | "exercise" | "rest" | "tick" | "complete") => void;
+  playVoice: (exerciseId: string, delaySeconds?: number) => void;
   onFinish: (durationSeconds: number) => void;
   onExit: () => void;
 };
@@ -26,6 +27,7 @@ export function WorkoutScreen({
   onSoundToggle,
   prepareAudio,
   playAudio,
+  playVoice,
   onFinish,
   onExit,
 }: WorkoutScreenProps) {
@@ -43,6 +45,7 @@ export function WorkoutScreen({
   const completedRef = useRef(false);
   const lastIntervalCueRef = useRef(-1);
   const lastTickRef = useRef("");
+  const lastVoiceRef = useRef("");
 
   useWakeLock(status === "running");
 
@@ -78,12 +81,33 @@ export function WorkoutScreen({
   }, [interval.type, intervalIndex, playAudio, status]);
 
   useEffect(() => {
-    if (status !== "running" || remainingSeconds > 3 || remainingSeconds < 1) return;
+    const tickThreshold = interval.type === "prepare" ? 2 : 3;
+    if (
+      status !== "running" ||
+      remainingSeconds > tickThreshold ||
+      remainingSeconds < 1
+    ) {
+      return;
+    }
     const tickKey = `${intervalIndex}-${remainingSeconds}`;
     if (lastTickRef.current === tickKey) return;
     lastTickRef.current = tickKey;
     playAudio("tick");
-  }, [intervalIndex, playAudio, remainingSeconds, status]);
+  }, [interval.type, intervalIndex, playAudio, remainingSeconds, status]);
+
+  useEffect(() => {
+    if (status !== "running") return;
+    const shouldAnnounce =
+      (interval.type === "prepare" && remainingSeconds === 5) ||
+      (interval.type === "rest" && remainingSeconds === 5);
+    const nextExercise =
+      interval.type === "prepare" ? interval.exercise : interval.nextExercise;
+    if (!shouldAnnounce || !nextExercise) return;
+    const voiceKey = `${intervalIndex}-${nextExercise.id}`;
+    if (lastVoiceRef.current === voiceKey) return;
+    lastVoiceRef.current = voiceKey;
+    playVoice(nextExercise.id, interval.type === "prepare" ? 0.52 : 0);
+  }, [interval, intervalIndex, playVoice, remainingSeconds, status]);
 
   useEffect(() => {
     if (elapsedMs < totalDurationMs || completedRef.current) return;
@@ -133,7 +157,8 @@ export function WorkoutScreen({
     );
   }
 
-  const shownExercise = interval.type === "exercise" ? interval.exercise : interval.nextExercise;
+  const shownExercise =
+    interval.type === "exercise" ? interval.exercise : interval.nextExercise;
   const shownExerciseText = shownExercise
     ? getExerciseText(shownExercise, language)
     : undefined;
@@ -155,7 +180,9 @@ export function WorkoutScreen({
           <span>
             {interval.type === "exercise"
               ? `${copy.workoutExercise} ${exerciseNumber} ${copy.workoutOf} ${exercises.length}`
-              : copy.workoutBreak}
+              : interval.type === "prepare"
+                ? copy.workoutPrepare
+                : copy.workoutBreak}
           </span>
           <span>{Math.round(overallProgress * 100)}%</span>
         </div>
@@ -165,9 +192,21 @@ export function WorkoutScreen({
         )}
 
         <div className="workout-title" aria-live="polite">
-          <p className="eyebrow">{interval.type === "exercise" ? copy.workoutNow : copy.workoutNext}</p>
+          <p className="eyebrow">
+            {interval.type === "exercise"
+              ? copy.workoutNow
+              : interval.type === "prepare"
+                ? copy.workoutFirst
+                : copy.workoutNext}
+          </p>
           <h1>{shownExerciseText?.name}</h1>
-          <p>{interval.type === "exercise" ? shownExerciseText?.cue : copy.workoutGetReady}</p>
+          <p>
+            {interval.type === "exercise"
+              ? shownExerciseText?.cue
+              : interval.type === "prepare"
+                ? copy.workoutStartingSoon
+                : copy.workoutGetReady}
+          </p>
         </div>
 
         <ProgressRing progress={intervalProgress}>

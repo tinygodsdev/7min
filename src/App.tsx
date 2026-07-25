@@ -6,7 +6,10 @@ import { WorkoutScreen } from "./components/WorkoutScreen";
 import { LandingPage } from "./components/LandingPage";
 import { PrivacyPage } from "./components/PrivacyPage";
 import { usePersistentState } from "./hooks/usePersistentState";
-import { useWorkoutAudio } from "./hooks/useWorkoutAudio";
+import {
+  useWorkoutAudio,
+  type SoundLevel,
+} from "./hooks/useWorkoutAudio";
 
 type AppScreen = "home" | "editor" | "workout";
 
@@ -34,7 +37,23 @@ function WorkoutApp() {
     "seven-minutes-sound",
     true,
   );
-  const { prepare: prepareAudio, play: playAudio } = useWorkoutAudio(soundEnabled);
+  const [soundLevel, setSoundLevel] = usePersistentState<SoundLevel>(
+    "seven-minutes-sound-level",
+    "loud",
+  );
+  const [voiceEnabled, setVoiceEnabled] = usePersistentState(
+    "seven-minutes-voice",
+    true,
+  );
+  const {
+    prepare: prepareAudio,
+    play: playAudio,
+    playVoice,
+  } = useWorkoutAudio({
+    enabled: soundEnabled,
+    level: soundLevel,
+    voiceEnabled,
+  });
 
   const activeExercises = useMemo(
     () =>
@@ -58,6 +77,13 @@ function WorkoutApp() {
     [activeExercises.length, setHistory],
   );
 
+  const toggleSound = useCallback(() => {
+    if (!soundEnabled) {
+      void prepareAudio(activeExercises.map((exercise) => exercise.id));
+    }
+    setSoundEnabled((enabled) => !enabled);
+  }, [activeExercises, prepareAudio, setSoundEnabled, soundEnabled]);
+
   if (screen === "editor") {
     return (
       <ProgramEditor
@@ -65,6 +91,15 @@ function WorkoutApp() {
         onChange={setProgram}
         onReset={() => setProgram(canonicalProgram())}
         onClose={() => setScreen("home")}
+        soundEnabled={soundEnabled}
+        onSoundToggle={toggleSound}
+        soundLevel={soundLevel}
+        onSoundLevelChange={setSoundLevel}
+        voiceEnabled={voiceEnabled}
+        onVoiceToggle={() => setVoiceEnabled((enabled) => !enabled)}
+        onPreviewSound={() => {
+          void prepareAudio().then(() => playAudio("exercise"));
+        }}
       />
     );
   }
@@ -74,9 +109,10 @@ function WorkoutApp() {
       <WorkoutScreen
         exercises={activeExercises}
         soundEnabled={soundEnabled}
-        onSoundToggle={() => setSoundEnabled((enabled) => !enabled)}
+        onSoundToggle={toggleSound}
         prepareAudio={prepareAudio}
         playAudio={playAudio}
+        playVoice={playVoice}
         onFinish={finishWorkout}
         onExit={() => setScreen("home")}
       />
@@ -87,9 +123,11 @@ function WorkoutApp() {
     <HomeScreen
       activeExercises={activeExercises}
       soundEnabled={soundEnabled}
-      onSoundToggle={() => setSoundEnabled((enabled) => !enabled)}
+      onSoundToggle={toggleSound}
       onStart={() => {
-        void prepareAudio().then(() => setScreen("workout"));
+        void prepareAudio(activeExercises.map((exercise) => exercise.id)).then(() =>
+          setScreen("workout"),
+        );
       }}
       onEdit={() => setScreen("editor")}
       history={history}
