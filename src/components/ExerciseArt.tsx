@@ -23,6 +23,10 @@ export function ExerciseArt({ exercise, className = "" }: ExerciseArtProps) {
       role="img"
       aria-label={`${copy.exerciseIllustration} “${exerciseText.name}”`}
       style={{
+        backgroundImage:
+          exercise.spriteSheet === 2
+            ? 'url("/exercise-sprite-2.webp")'
+            : undefined,
         backgroundPosition: `${positionForCell(column)}% ${positionForCell(row)}%`,
       }}
     />
